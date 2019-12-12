@@ -144,7 +144,8 @@ def initConfigSvc(object file not None):
     if PyString_Check(file):
         
         # if string is passed then it is a file name
-        strfname = string(PyString_AsString(file))
+        # strfname = string(PyString_AsString(file))
+        strfname = file.encode() # FIXME don't know if this works on py2
         ptr.reset(new ConfigSvcImplFile(strfname))
         
     else:
@@ -201,7 +202,8 @@ cdef class ConfigSvc:
         if defval is None:
             tmpstr = self.thisptr.getStr(strsec, strparam)
         else:
-            tmpstr = string(PyString_AsString(defval))
+            #tmpstr = string(PyString_AsString(defval))
+            tmpstr = defval.encode() # FIXME don't know if this works on py2
             tmpstr = self.thisptr.getStr(strsec, strparam, tmpstr)
         return tmpstr.c_str()
 
