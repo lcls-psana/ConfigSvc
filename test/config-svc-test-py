@@ -23,6 +23,8 @@ part of it, please give an appropriate acknowledgement.
 #------------------------------
 #  Module's version from CVS --
 #------------------------------
+from future import standard_library
+standard_library.install_aliases()
 __version__ = "$Revision: 8 $"
 # $Source$
 
@@ -30,7 +32,7 @@ __version__ = "$Revision: 8 $"
 #  Imports of standard modules --
 #--------------------------------
 import unittest
-import cStringIO
+import io
 
 #---------------------------------
 #  Imports of base class module --
@@ -87,7 +89,7 @@ class config_svc_test_py ( unittest.TestCase ) :
         # init service once
         global _init
         if not _init:
-            f = cStringIO.StringIO(_config)
+            f = io.StringIO(_config)
             initConfigSvc(f)
             _init = True
     
