@@ -30,6 +30,7 @@ from cpython.ref cimport *
 from cpython.string cimport *
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+import six
 
 #---------------------------------
 #  Imports of base class module --
@@ -145,7 +146,10 @@ def initConfigSvc(object file not None):
         
         # if string is passed then it is a file name
         # strfname = string(PyString_AsString(file))
-        strfname = file.encode() # FIXME don't know if this works on py2
+        if six.PY3:
+            strfname = file.encode()
+        else:
+            strfname = file
         ptr.reset(new ConfigSvcImplFile(strfname))
         
     else:
@@ -203,7 +207,10 @@ cdef class ConfigSvc:
             tmpstr = self.thisptr.getStr(strsec, strparam)
         else:
             #tmpstr = string(PyString_AsString(defval))
-            tmpstr = defval.encode() # FIXME don't know if this works on py2
+            if six.PY3:
+                tmpstr = defval.encode()
+            else:
+                tmpstr = defval
             tmpstr = self.thisptr.getStr(strsec, strparam, tmpstr)
         return tmpstr.c_str()
 

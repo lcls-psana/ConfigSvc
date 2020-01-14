@@ -46,7 +46,7 @@ from ConfigSvc import *
 #---------------------
 # Local definitions --
 #---------------------
-_config = "\
+_config = u"\
 # comment\n\
 [section1]\n\
 paramInt1 = 0\n\
