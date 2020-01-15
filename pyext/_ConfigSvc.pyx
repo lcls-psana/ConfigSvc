@@ -158,9 +158,12 @@ def initConfigSvc(object file not None):
         if hasattr(file, 'name'):
             strfname = string(<char*>file.name)
         else:
-            sstr = PyObject_Str(file)
-            strfname = string(<char*>sstr)
-        sstr = file.read()
+            strfname = "unknown_name"
+
+        if six.PY3:
+            sstr = file.read().encode()
+        else:
+            sstr = file.read()
         istr.str(string(<char*>sstr))
         ptr.reset(new ConfigSvcImplFile(istr, strfname))
 
@@ -206,7 +209,7 @@ cdef class ConfigSvc:
         if defval is None:
             tmpstr = self.thisptr.getStr(strsec, strparam)
         else:
-            #tmpstr = string(PyString_AsString(defval))
+            tmpstr = str(defval)
             if six.PY3:
                 tmpstr = defval.encode()
             else:
@@ -394,8 +397,6 @@ cdef class ConfigSvc:
         """
         cdef string strsec = string(section)
         cdef string strparam = string(param)
-        cdef object obj = PyObject_Str(value)
-        cdef string str = string(<char*>obj)
 
-        self.thisptr.put(strsec, strparam, str)
+        self.thisptr.put(strsec, strparam, str(value))
 
