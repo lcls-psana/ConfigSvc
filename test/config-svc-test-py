@@ -32,7 +32,7 @@ __version__ = "$Revision: 8 $"
 #  Imports of standard modules --
 #--------------------------------
 import unittest
-import io
+import six
 
 #---------------------------------
 #  Imports of base class module --
@@ -46,7 +46,7 @@ from ConfigSvc import *
 #---------------------
 # Local definitions --
 #---------------------
-_config = u"\
+_config = "\
 # comment\n\
 [section1]\n\
 paramInt1 = 0\n\
@@ -89,7 +89,7 @@ class config_svc_test_py ( unittest.TestCase ) :
         # init service once
         global _init
         if not _init:
-            f = io.StringIO(_config)
+            f = six.StringIO(_config)
             initConfigSvc(f)
             _init = True
     
@@ -100,78 +100,78 @@ class config_svc_test_py ( unittest.TestCase ) :
 
         cfgsvc = ConfigSvc()
   
-        self.assertRaises(RuntimeError, cfgsvc.getStr, "unknown_section", "unknown_param")
-        self.assertRaises(RuntimeError, cfgsvc.getStr, "section1", "unknown_param")
-        self.assertRaises(RuntimeError, cfgsvc.getStrList, "unknown_section", "unknown_param")
-        self.assertRaises(RuntimeError, cfgsvc.getStrList, "section1", "unknown_param")
+        self.assertRaises(RuntimeError, cfgsvc.getStr, b"unknown_section", b"unknown_param")
+        self.assertRaises(RuntimeError, cfgsvc.getStr, b"section1", b"unknown_param")
+        self.assertRaises(RuntimeError, cfgsvc.getStrList, b"unknown_section", b"unknown_param")
+        self.assertRaises(RuntimeError, cfgsvc.getStrList, b"section1", b"unknown_param")
 
         # type mistmatch
-        self.assertRaises(TypeError, cfgsvc.getStr, "unknown_section", "unknown_param", 0)
-        self.assertRaises(TypeError, cfgsvc.getBool, "unknown_section", "unknown_param", [])
-        self.assertRaises(TypeError, cfgsvc.getInt, "unknown_section", "unknown_param", "")
-        self.assertRaises(TypeError, cfgsvc.getFloat, "unknown_section", "unknown_param", [1])
-        self.assertRaises(TypeError, cfgsvc.getStrList, "unknown_section", "unknown_param", [1, 2])
-        self.assertRaises(TypeError, cfgsvc.getBoolList, "unknown_section", "unknown_param", True)
-        self.assertRaises(TypeError, cfgsvc.getIntList ,"unknown_section", "unknown_param", [""])
-        self.assertRaises(TypeError, cfgsvc.getFloatList, "unknown_section", "unknown_param", [1, ""])
+        self.assertRaises(TypeError, cfgsvc.getStr, b"unknown_section", b"unknown_param", 0)
+        self.assertRaises(TypeError, cfgsvc.getBool, b"unknown_section", b"unknown_param", [])
+        self.assertRaises(TypeError, cfgsvc.getInt, b"unknown_section", b"unknown_param", "")
+        self.assertRaises(TypeError, cfgsvc.getFloat, b"unknown_section", b"unknown_param", [1])
+        self.assertRaises(TypeError, cfgsvc.getStrList, b"unknown_section", b"unknown_param", [1, 2])
+        self.assertRaises(TypeError, cfgsvc.getBoolList, "unknown_section", b"unknown_param", True)
+        self.assertRaises(TypeError, cfgsvc.getIntList ,b"unknown_section", b"unknown_param", [""])
+        self.assertRaises(TypeError, cfgsvc.getFloatList, b"unknown_section", b"unknown_param", [1, ""])
         
         # no exceptions from these
-        cfgsvc.getInt("unknown_section", "unknown_param", 0)
-        cfgsvc.getInt("section1", "unknown_param", 0)
-        cfgsvc.getIntList("unknown_section", "unknown_param", [1])
-        cfgsvc.getIntList("section1", "unknown_param", [1,2,3])
+        cfgsvc.getInt(b"unknown_section", b"unknown_param", 0)
+        cfgsvc.getInt(b"section1", b"unknown_param", 0)
+        cfgsvc.getIntList(b"unknown_section", b"unknown_param", [1])
+        cfgsvc.getIntList(b"section1", b"unknown_param", [1,2,3])
 
     def test_int(self):
 
         cfgsvc = ConfigSvc()
         
-        val = cfgsvc.getInt("section1", "paramInt1")
+        val = cfgsvc.getInt(b"section1", b"paramInt1")
         self.assertEqual(val, 0)
-        val = cfgsvc.getInt("section1", "paramInt2")
+        val = cfgsvc.getInt(b"section1", b"paramInt2")
         self.assertEqual(val, -1000)
-        val = cfgsvc.getInt("section1", "paramInt3")
+        val = cfgsvc.getInt(b"section1", b"paramInt3")
         self.assertEqual(val, 1000)
-        val = cfgsvc.getInt("section1", "paramInt3", -1000000)
+        val = cfgsvc.getInt(b"section1", b"paramInt3", -1000000)
         self.assertEqual(val, 1000)
-        val = cfgsvc.getInt("section1", "unknown_param", -1000000)
+        val = cfgsvc.getInt(b"section1", b"unknown_param", -1000000)
         self.assertEqual(val, -1000000)
 
     def test_double(self):
         
         cfgsvc = ConfigSvc()
         
-        val = cfgsvc.getFloat("section1", "paramFloat1");
+        val = cfgsvc.getFloat(b"section1", b"paramFloat1");
         self.assertEqual(val, 0.123456);
-        val = cfgsvc.getFloat("section1", "paramFloat2");
+        val = cfgsvc.getFloat(b"section1", b"paramFloat2");
         self.assertEqual(val, 1e10);
-        val = cfgsvc.getFloat("section1", "paramFloat3");
+        val = cfgsvc.getFloat(b"section1", b"paramFloat3");
         self.assertEqual(val, -1e10);
-        val = cfgsvc.getFloat("section1", "paramFloat4");
+        val = cfgsvc.getFloat(b"section1", b"paramFloat4");
         self.assertEqual(val, 1e-10);
 
     def test_bool(self):
 
         cfgsvc = ConfigSvc()
         
-        val = cfgsvc.getBool("section1", "paramBool1");
+        val = cfgsvc.getBool(b"section1", b"paramBool1");
         self.assertEqual(val, False);
-        val = cfgsvc.getBool("section1", "paramBool2");
+        val = cfgsvc.getBool(b"section1", b"paramBool2");
         self.assertEqual(val, True);
-        val = cfgsvc.getBool("section1", "paramBool3");
+        val = cfgsvc.getBool(b"section1", b"paramBool3");
         self.assertEqual(val, False);
-        val = cfgsvc.getBool("section1", "paramBool4");
+        val = cfgsvc.getBool(b"section1", b"paramBool4");
         self.assertEqual(val, True);
-        val = cfgsvc.getBool("section1", "paramBool5");
+        val = cfgsvc.getBool(b"section1", b"paramBool5");
         self.assertEqual(val, False);
-        val = cfgsvc.getBool("section1", "paramBool6");
+        val = cfgsvc.getBool(b"section1", b"paramBool6");
         self.assertEqual(val, True);
-        val = cfgsvc.getBool("section1", "paramBool7");
+        val = cfgsvc.getBool(b"section1", b"paramBool7");
         self.assertEqual(val, False);
-        val = cfgsvc.getBool("section1", "paramBool8");
+        val = cfgsvc.getBool(b"section1", b"paramBool8");
         self.assertEqual(val, True);
-        val = cfgsvc.getBool("section1", "paramBool8", False);
+        val = cfgsvc.getBool(b"section1", b"paramBool8", False);
         self.assertEqual(val, True);
-        val = cfgsvc.getBool("section1", "unknown_param", False);
+        val = cfgsvc.getBool(b"section1", b"unknown_param", False);
         self.assertEqual(val, False);
 
 
@@ -179,38 +179,38 @@ class config_svc_test_py ( unittest.TestCase ) :
         
         cfgsvc = ConfigSvc()
 
-        val = cfgsvc.getStr("section1", "paramString1");
-        self.assertEqual(val, "");
-        val = cfgsvc.getStr("section1", "paramString2");
-        self.assertEqual(val, "OneWord");
-        val = cfgsvc.getStr("section1", "paramString3");
-        self.assertEqual(val, "Two Words");
+        val = cfgsvc.getStr(b"section1", b"paramString1");
+        self.assertEqual(val, b"");
+        val = cfgsvc.getStr(b"section1", b"paramString2");
+        self.assertEqual(val, b"OneWord");
+        val = cfgsvc.getStr(b"section1", b"paramString3");
+        self.assertEqual(val, b"Two Words");
 
 
     def test_list_str(self):
         
         cfgsvc = ConfigSvc()
 
-        val = cfgsvc.getStrList("section1", "paramList1");
+        val = cfgsvc.getStrList(b"section1", b"paramList1");
         self.assertEqual(val, []);
-        val = cfgsvc.getStrList("section1", "paramList2");
+        val = cfgsvc.getStrList(b"section1", b"paramList2");
         self.assertEqual(len(val), 1);
-        self.assertEqual(val[0], "1000");
-        val = cfgsvc.getStrList("section1", "paramList3");
+        self.assertEqual(val[0], b"1000");
+        val = cfgsvc.getStrList(b"section1", b"paramList3");
         self.assertEqual(len(val), 2);
-        self.assertEqual(val[0], "2000");
-        self.assertEqual(val[1], "3000");
+        self.assertEqual(val[0], b"2000");
+        self.assertEqual(val[1], b"3000");
 
     def  test_list_int(self):
 
         cfgsvc = ConfigSvc()
 
-        val = cfgsvc.getIntList("section1", "paramList1");
+        val = cfgsvc.getIntList(b"section1", b"paramList1");
         self.assertEqual(val, []);
-        val = cfgsvc.getIntList("section1", "paramList2");
+        val = cfgsvc.getIntList(b"section1", b"paramList2");
         self.assertEqual(len(val), 1);
         self.assertEqual(val[0], 1000);
-        val = cfgsvc.getIntList("section1", "paramList3");
+        val = cfgsvc.getIntList(b"section1", b"paramList3");
         self.assertEqual(len(val), 2);
         self.assertEqual(val[0], 2000);
         self.assertEqual(val[1], 3000);
