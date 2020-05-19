@@ -112,16 +112,67 @@ public:
     : m_pstr(pstr), m_sect(sect), m_parm(parm) {}
     
     // conversion to final value
+    // can't templatize conversion operator because of ambiguities with
+    // std::initializer_list starting in c++11
+    operator std::list<std::string>() const {
+      return to_container<std::list<std::string>>();
+    }
+    operator std::vector<std::string>() const {
+      return to_container<std::vector<std::string>>();
+    }
+    operator std::list<unsigned long int>() const {
+      return to_container<std::list<unsigned long int>>();
+    }
+    operator std::vector<unsigned long int>() const {
+      return to_container<std::vector<unsigned long int>>();
+    }
+    operator std::list<long int>() const {
+      return to_container<std::list<long int>>();
+    }
+    operator std::vector<long int>() const {
+      return to_container<std::vector<long int>>();
+    }
+    operator std::list<float>() const {
+      return to_container<std::list<float>>();
+    }
+    operator std::vector<float>() const {
+      return to_container<std::vector<float>>();
+    }
+    operator std::list<double>() const {
+      return to_container<std::list<double>>();
+    }
+    operator std::vector<double>() const {
+      return to_container<std::vector<double>>();
+    }
+    operator std::list<unsigned>() const {
+      return to_container<std::list<unsigned>>();
+    }
+    operator std::vector<unsigned>() const {
+      return to_container<std::vector<unsigned>>();
+    }
+    operator std::list<int>() const {
+      return to_container<std::list<int>>();
+    }
+    operator std::vector<int>() const {
+      return to_container<std::vector<int>>();
+    }
+    operator std::list<bool>() const {
+      return to_container<std::list<bool>>();
+    }
+    operator std::vector<bool>() const {
+      return to_container<std::vector<bool>>();
+    }
+    
+  private:
     template <typename Container>
-    operator Container() const {
+    Container to_container() const {
       Container res ;
-      for (std::list<std::string>::const_iterator it = m_pstr->begin() ; it != m_pstr->end() ; ++ it ) {      
+      for (std::list<std::string>::const_iterator it = m_pstr->begin() ; it != m_pstr->end() ; ++ it ) {
         res.push_back( ConfigSvcTypeTraits<typename Container::value_type>::fromString(*it, m_sect, m_parm) );
       }
       return res;
     }
-    
-  private:
+
     boost::shared_ptr<const std::list<std::string> > m_pstr;
     const std::string& m_sect;
     const std::string& m_parm;
@@ -135,7 +186,10 @@ public:
       : m_pstr(pstr), m_sect(sect), m_parm(parm), m_def(def) {}
     
     // conversion to final value
-    template <typename Container>
+    // disable std::initializer_list since it creates template ambiguities
+    // starting with c++11
+    template <typename Container,
+      typename std::enable_if<!std::is_same<Container, std::initializer_list<std::string>>::value, int>::type = 0>
     operator Container() const {
       if (not m_pstr.get()) return m_def;
       
