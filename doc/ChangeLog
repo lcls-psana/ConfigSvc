@@ -11,9 +11,13 @@ Package author: Andy Salnikov
 Please describe any modifications that you made to the package in the
 reverse time order.
 
-Tag: V00-02-01
+Tag: V01-00-01
 2023-12-15 Mikhail Dubrovin
 - include/ConfigSvc.h - add #include <vector>, remove blanks
+
+Tag: V01-00-00 ???
+
+Tag: V00-03-00 ???
 
 Tag: V00-02-00
 2013-03-08 Andy Salnikov
