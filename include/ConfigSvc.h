@@ -1,14 +1,10 @@
 #ifndef CONFIGSVC_CONFIGSVC_H
 #define CONFIGSVC_CONFIGSVC_H
 
-//--------------------------------------------------------------------------
-// File and Version Information:
-// 	$Id$
-//
+//------------------------------
 // Description:
 //	Class ConfigSvc.
-//
-//------------------------------------------------------------------------
+//------------------------------
 
 //-----------------
 // C/C++ Headers --
@@ -16,6 +12,7 @@
 #include <list>
 #include <memory>
 #include <string>
+#include <vector>
 #include <boost/shared_ptr.hpp>
 
 //----------------------
@@ -47,7 +44,7 @@ namespace ConfigSvc {
  *
  *  Configuration service class.
  *
- *  This software was developed for the LCLS project.  If you use all or 
+ *  This software was developed for the LCLS project.  If you use all or
  *  part of it, please give an appropriate acknowledgment.
  *
  *  @version $Id$
@@ -59,19 +56,17 @@ class ConfigSvc  {
 public:
 
   typedef int context_t;
-  
-  // ========================================================================
 
   // helper classes to handle conversion
   class Result {
   public:
     Result(const boost::shared_ptr<const std::string>& pstr, const std::string& sect,
         const std::string& parm) : m_pstr(pstr), m_sect(sect), m_parm(parm) {}
-    
+
     // conversion to final value
     template <typename T>
     operator T() const { return ConfigSvcTypeTraits<T>::fromString(*m_pstr, m_sect, m_parm); }
-    
+
   private:
     boost::shared_ptr<const std::string> m_pstr;
     const std::string& m_sect;
@@ -84,7 +79,7 @@ public:
     ResultDef(const boost::shared_ptr<const std::string>& pstr, const std::string& sect,
         const std::string& parm, const Def& def)
       : m_pstr(pstr), m_sect(sect), m_parm(parm), m_def(def) {}
-    
+
     // conversion to final value
     template <typename T>
     operator T() const {
@@ -97,20 +92,20 @@ public:
 
     // retursn true if result is a default value
     bool isDefault() const { return not m_pstr; }
-    
+
   private:
     boost::shared_ptr<const std::string> m_pstr;
     const std::string& m_sect;
     const std::string& m_parm;
     Def m_def;
   };
-  
+
   class ResultList {
   public:
     ResultList(const boost::shared_ptr<const std::list<std::string> >& pstr, const std::string& sect,
         const std::string& parm)
     : m_pstr(pstr), m_sect(sect), m_parm(parm) {}
-    
+
     // conversion to final value
     // can't templatize conversion operator because of ambiguities with
     // std::initializer_list starting in c++11
@@ -162,7 +157,7 @@ public:
     operator std::vector<bool>() const {
       return to_container<std::vector<bool>>();
     }
-    
+
   private:
     template <typename Container>
     Container to_container() const {
@@ -184,7 +179,7 @@ public:
     ResultListDef(const boost::shared_ptr<const std::list<std::string> >& pstr, const std::string& sect,
         const std::string& parm, const Def& def)
       : m_pstr(pstr), m_sect(sect), m_parm(parm), m_def(def) {}
-    
+
     // conversion to final value
     // disable std::initializer_list since it creates template ambiguities
     // starting with c++11
@@ -192,14 +187,14 @@ public:
       typename std::enable_if<!std::is_same<Container, std::initializer_list<std::string>>::value, int>::type = 0>
     operator Container() const {
       if (not m_pstr.get()) return m_def;
-      
+
       Container res ;
-      for (std::list<std::string>::const_iterator it = m_pstr->begin() ; it != m_pstr->end() ; ++ it ) {      
+      for (std::list<std::string>::const_iterator it = m_pstr->begin() ; it != m_pstr->end() ; ++ it ) {
         res.push_back( ConfigSvcTypeTraits<typename Container::value_type>::fromString(*it, m_sect, m_parm) );
       }
       return res;
     }
-    
+
   private:
     boost::shared_ptr<const std::list<std::string> > m_pstr;
     const std::string& m_sect;
@@ -207,8 +202,6 @@ public:
     Def m_def;
   };
 
-  
-  // ========================================================================
 
   /**
    *  @brief Make instance of configuration service for a specified or global context.
@@ -223,7 +216,7 @@ public:
    *  @throw ExceptionNotInitialized
    */
   ConfigSvc(context_t context = context_t(0)) : m_ctx(context) {}
-  
+
   /**
    *  @brief Get the value of a single parameter.
    *
@@ -298,7 +291,7 @@ public:
       return def;
     }
   }
-  
+
   /**
    *  @brief Get the value of a single parameter as sequence.
    *
@@ -317,7 +310,7 @@ public:
     if (not pstr.get()) throw ExceptionMissing(section, param);
     return ResultList(pstr, section, param);
   }
-  
+
   /**
    *  @brief Get the value of a single parameter as sequence, or return default value.
    *
@@ -335,7 +328,7 @@ public:
     boost::shared_ptr<const std::list<std::string> > pstr = impl(m_ctx).getList(section, param);
     return ResultListDef<Cont>(pstr, section, param, def);
   }
-  
+
   /**
    *  @brief Set the value of the parameter.
    *
@@ -406,7 +399,7 @@ private:
 
   // get the implementation instance, throws if not initialized
   static ConfigSvcImplI& impl(context_t context);
-  
+
 };
 
 } // namespace ConfigSvc

@@ -1,19 +1,23 @@
-#--------------------------------------------------------------------------
+#--------------------------------------
 # File and Version Information:
 #  $Id$
 #
 # Description:
 #  ChangeLog file for package ConfigSvc
-#------------------------------------------------------------------------
+#--------------------------------------
 
 Package author: Andy Salnikov
 
 Please describe any modifications that you made to the package in the
 reverse time order.
 
+Tag: V00-02-01
+2023-12-15 Mikhail Dubrovin
+- include/ConfigSvc.h - add #include <vector>, remove blanks
+
 Tag: V00-02-00
 2013-03-08 Andy Salnikov
-- exception generated during string conversion was lacking information 
+- exception generated during string conversion was lacking information
   about the source of the problem. Now adding section/parameter name to
   the exception, this needs these names to be passed around to all result
   types and conversion method. Things become more heavyweight, the result
@@ -56,7 +60,7 @@ Tag: V00-00-06
 
 Tag: V00-00-05
 2011-03-20 Andy Salnikov
-- added default constructor to ConfigSvcImplFile to instantiate 
+- added default constructor to ConfigSvcImplFile to instantiate
   empty configuration
 
 Tag: V00-00-04
